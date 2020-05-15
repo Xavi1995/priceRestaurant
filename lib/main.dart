@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:price/models/place.dart';
+import 'package:price/pages/wrapper.dart';
+
+import 'db.dart' as db;
 
 void main() {
   runApp(App());
@@ -7,46 +11,29 @@ void main() {
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        backgroundColor: Colors.brown[100],
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              children: <Widget>[
-                Text(
-                  'Welcome to your plan !',
-                  style: TextStyle(
-                    color: Colors.brown,
-                    fontWeight: FontWeight.w300,
-                    fontSize: 40,
-                  ),
+    return StreamBuilder(
+      stream: db.getPlaces(),
+      builder: (BuildContext context, AsyncSnapshot<List<Place>> snapshot) {
+        if (snapshot.hasError) {
+          return MaterialApp(
+            home: Scaffold(
+              backgroundColor: Colors.yellow,
+              body: Center(
+                child: Text(
+                  snapshot.error.toString(),
                 ),
-                SizedBox(height: 40),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Text(
-                          'Who are you ?',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
-                      ],
-                    ),
-                    
-                  ],
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
+          );
+        } else if (!snapshot.hasData) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: Wrapper(),
+        );
+      },
     );
   }
 }
