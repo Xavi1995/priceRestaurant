@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:price/pages/authenticate/sign_in_page.dart';
 import 'package:price/services/auth.dart';
 
 class Register extends StatefulWidget {
+  final Function toggleView;
+  Register({this.toggleView});
   @override
   _RegisterState createState() => _RegisterState();
 }
 
 class _RegisterState extends State<Register> {
   AuthService _auth = AuthService();
-  String name = '';
+  String email = '';
   String pass = '';
+  String error = '';
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -32,22 +36,28 @@ class _RegisterState extends State<Register> {
                   padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                   height: _screenHeight * 1 / 3,
                   width: _screenWidth * 0.8,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Form(
-                        child: Column(
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Column(
                           children: <Widget>[
-                            TextField(
+                            TextFormField(
+                              validator: (val) =>
+                                  val.isEmpty ? 'Please enter an email' : null,
                               onChanged: (val) {
                                 setState(() {
-                                  name = val;
+                                  email = val;
                                 });
                               },
                             ),
                             SizedBox(height: 10),
-                            TextField(
+                            TextFormField(
+                              validator: (val) => val.length < 6
+                                  ? 'Enter a 6+ chars password'
+                                  : null,
                               obscureText: true,
                               onChanged: (val) {
                                 setState(() {
@@ -55,67 +65,72 @@ class _RegisterState extends State<Register> {
                                 });
                               },
                             ),
+                            SizedBox(height: 10),
+                            Text(
+                              error,
+                              style: TextStyle(
+                                color: Colors.red,
+                              ),
+                            ),
                           ],
                         ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4),
-                              color: Colors.brown,
-                            ),
-                            child: FlatButton(
-                              child: Text(
-                                'Sign In Anonymously',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w400),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: <Widget>[
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                color: Colors.brown,
                               ),
-                              onPressed: () async {
-                                /*dynamic result = await _auth.signInAnon();
-                                if (result == null) {
-                                  print('error in sign in');
-                                } else {
-                                  print(result.uid);
-                                }
-                                */
-                              },
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Align(
-                            alignment: Alignment.center,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  'Have an account Already?',
+                              child: FlatButton(
+                                child: Text(
+                                  'Go !',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w400),
                                 ),
-                                SizedBox(width: 4),
-                                GestureDetector(
-                                  child: Text(
-                                    'Sing in here.',
-                                    style: TextStyle(
-                                      decoration: TextDecoration.underline,
-                                      color: Colors.brown,
-                                    ),
+                                onPressed: () async {
+                                  if (_formKey.currentState.validate()) {
+                                    dynamic result = await _auth
+                                        .registerEmailPass(email, pass);
+                                    if (result == null) {
+                                      setState(() {
+                                        error = 'Please supply a valid email';
+                                      });
+                                    }
+                                  }
+                                },
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            Align(
+                              alignment: Alignment.center,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    'Have an account Already?',
                                   ),
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => SignIn()),
-                                    );
-                                  },
-                                ),
-                              ],
+                                  SizedBox(width: 4),
+                                  GestureDetector(
+                                    child: Text(
+                                      'Sing in here.',
+                                      style: TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        color: Colors.brown,
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      widget.toggleView();
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      )
-                    ],
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

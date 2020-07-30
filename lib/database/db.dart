@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:price/models/place.dart';
 
-import 'models/profile.dart';
-
-
 Stream<List<Place>> getPlaces() {
   return Firestore.instance.collection('Places').snapshots().map(toPlacesList);
   /*return Firestore.instance.collection('Ideas').snapshots().map(toIdeasList);*/

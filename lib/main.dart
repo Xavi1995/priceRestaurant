@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:price/models/place.dart';
-import 'package:price/pages/wrapper.dart';
-import 'package:provider/provider.dart';
-import 'package:price/services/auth.dart';
-import 'package:price/models/profile.dart';
+import 'dart:io' show Platform;
 
-import 'db.dart' as db;
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:overlay_support/overlay_support.dart';
+import 'package:price/pages/root_page.dart';
+import 'package:price/utils/MyLocalizationsDelegate.dart';
+import 'package:price/utils/Style.dart';
 
 void main() {
   runApp(App());
@@ -14,7 +14,47 @@ void main() {
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<User>.value(
+    TargetPlatform targetPlatform;
+
+    if (Platform.isAndroid) {
+      targetPlatform = TargetPlatform.android;
+    } else if (Platform.isIOS) {
+      targetPlatform = TargetPlatform.iOS;
+    }
+    return OverlaySupport(
+      child: MaterialApp(
+        title: 'YourPlan',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          platform: targetPlatform,
+          appBarTheme: AppBarTheme(
+            brightness: Brightness.dark,
+            color: Colors.transparent,
+            elevation: 0,
+            iconTheme: IconThemeData(
+              color: Color(0XFF383838),
+            ),
+          ),
+          backgroundColor: Colors.white,
+          primaryColor: Style.primaryColor,
+          accentColor: Style.primaryColor,
+        ),
+        home: RootPage(),
+        localizationsDelegates:[
+          const MyLocalizationsDelegate(),
+          GlobalMaterialLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('es'),
+          const Locale('en'),
+          const Locale('cat'),
+        ],
+      ),
+    );
+
+    /*StreamProvider<User>.value(
       value: AuthService().user,
           child: StreamBuilder(
         stream: db.getPlaces(),
@@ -38,8 +78,10 @@ class App extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             home: Wrapper(),
           );
+          
         },
       ),
     );
+    */
   }
 }
