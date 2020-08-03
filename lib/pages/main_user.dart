@@ -14,11 +14,20 @@ import 'package:price/widgets/placeCard.dart';
 class MainVc extends StatefulWidget {
   @override
   _MainVcState createState() => _MainVcState();
+
+  MainVc({
+    this.menuTriggerValue,
+  });
+
+  final Function(bool) menuTriggerValue;
 }
 
+typedef Callback(value);
+
 class _MainVcState extends State<MainVc> {
+  bool menuState = false;
   int _currentIndex = 0;
-  bool transform = false;
+  bool transform;
   StreamController<List<Place>> places =
       StreamController<List<Place>>.broadcast();
 
@@ -47,198 +56,189 @@ class _MainVcState extends State<MainVc> {
 
     double maxHeight = MediaQuery.of(context).size.height;
     double maxWidth = MediaQuery.of(context).size.width;
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 1000),
-      child: StreamBuilder(
+    return StreamBuilder(
         stream: transformStream.stream,
-        initialData: transform,
+        initialData: menuState,
         builder: (context, snapshot) {
-          return Transform(
-            transform: Matrix4.translationValues(
-                transform ? maxWidth * 2 / 3 : 0, transform ? maxHeight / 3 : 0, 0)
-              ..scale(transform ? 0.7 : 1.0),
-            child: Scaffold(
-              backgroundColor: Style.backgroundColor,
-              appBar: Style.appBar(
-                'Your Plan',
-                color: Style.primaryColor,
-                leading: IconButton(
-                  icon: Icon(Icons.menu),
-                  onPressed: () {
-                    transform = !transform;
-                    transformStream.add(transform);
-                    print(transform);
-                  },
-                ),
+          return Scaffold(
+            backgroundColor: Style.backgroundColor,
+            appBar: Style.appBar(
+              'Your Plan',
+              color: Style.primaryColor,
+              leading: IconButton(
+                icon: Icon(Icons.menu),
+                onPressed: () {
+                  menuState = /*!menuState*/ true;
+                  widget.menuTriggerValue(menuState);
+                  print('Menu State: $menuState');
+                },
               ),
-              body: SafeArea(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
-                      Stack(
-                        children: <Widget>[
-                          Container(
-                            color: Style.containerColor,
-                            width: double.infinity,
-                            height: 40,
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                                color: Style.backgroundColor,
-                                borderRadius: BorderRadius.only(
-                                    bottomRight: Radius.circular(60))),
-                            width: double.infinity,
-                            height: 40,
-                          )
-                        ],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: Style.lateralPaddingValue,
+            ),
+            body: SafeArea(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    Stack(
+                      children: <Widget>[
+                        Container(
+                          color: Style.containerColor,
+                          width: double.infinity,
+                          height: 40,
                         ),
-                        child: Container(
+                        Container(
                           decoration: BoxDecoration(
-                            color: Style.containerColor,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(40),
-                              bottomLeft: Radius.circular(40),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(
-                                20, 20, Style.lateralPaddingValue, 20),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: <Widget>[
-                                Style.bodyText('Let\'s plan !',
-                                    color: Colors.black,
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.normal),
-                                SizedBox(height: 10),
-                                Style.bodyText(
-                                  'We make your plan,',
-                                  color: Colors.black,
-                                ),
-                                Style.bodyText('you just have to enjoy it.',
-                                    color: Colors.black),
-                                SizedBox(height: 50),
-                                Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: Style.outlineButton(
-                                        'Repeat one',
-                                        () {},
-                                        fontSize: Style.fontSizeSmall,
-                                        borderColor: Style.primaryColor,
-                                        color: Colors.transparent,
-                                        textColor: Style.primaryColor,
-                                        borderRadiusValue: 20.0,
-                                      ),
-                                    ),
-                                    SizedBox(width: 8),
-                                    Expanded(
-                                      child: Style.button(
-                                        'Start new',
-                                        () {
-                                          _goToConfigurablePlan();
-                                        },
-                                        fontSize: Style.fontSizeSmall,
-                                        textColor: Colors.white,
-                                        borderRadiusValue: 20.0,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
+                              color: Style.backgroundColor,
+                              borderRadius: BorderRadius.only(
+                                  bottomRight: Radius.circular(60))),
+                          width: double.infinity,
+                          height: 40,
+                        )
+                      ],
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: Style.lateralPaddingValue,
                       ),
-                      Container(
-                        child: Stack(
-                          children: <Widget>[
-                            Container(
-                              color: Style.containerColor,
-                              width: double.infinity,
-                              height: 60,
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Style.backgroundColor,
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(60),
-                                ),
-                              ),
-                              width: double.infinity,
-                              height: 60,
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: maxWidth,
+                      child: Container(
                         decoration: BoxDecoration(
                           color: Style.containerColor,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(40),
+                            bottomLeft: Radius.circular(40),
+                          ),
                         ),
                         child: Padding(
-                          padding: EdgeInsets.only(
-                              left: Style.lateralPaddingValue + 20,
-                              top: 20,
-                              bottom: 20),
+                          padding: EdgeInsets.fromLTRB(
+                              20, 20, Style.lateralPaddingValue, 20),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
-                              Style.bodyText('Some restaurants you could like',
+                              Style.bodyText('Let\'s plan !',
                                   color: Colors.black,
                                   fontSize: 18.0,
                                   fontWeight: FontWeight.normal),
-                              SizedBox(
-                                height: 20,
+                              SizedBox(height: 10),
+                              Style.bodyText(
+                                'We make your plan,',
+                                color: Colors.black,
                               ),
-                              StreamBuilder(
-                                stream: places.stream,
-                                initialData: Utils.places,
-                                builder: (BuildContext context,
-                                    AsyncSnapshot<List<Place>> snapshot) {
-                                  return Container(
-                                    height: 300,
-                                    child: ListView.builder(
-                                      itemCount: 6,
-                                      scrollDirection: Axis.horizontal,
-                                      shrinkWrap: true,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Padding(
-                                          padding: EdgeInsets.only(
-                                              right: Style.lateralPaddingValue),
-                                          child: Container(
-                                            child: PlaceCard(
-                                              place: snapshot.data[index],
-                                              image: images[index] == null
-                                                  ? null
-                                                  : images[index],
-                                              rating: rates[index],
-                                            ),
-                                          ),
-                                        );
-                                      },
+                              Style.bodyText('you just have to enjoy it.',
+                                  color: Colors.black),
+                              SizedBox(height: 50),
+                              Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    child: Style.outlineButton(
+                                      'Repeat one',
+                                      () {},
+                                      fontSize: Style.fontSizeSmall,
+                                      borderColor: Style.primaryColor,
+                                      color: Colors.transparent,
+                                      textColor: Style.primaryColor,
+                                      borderRadiusValue: 20.0,
                                     ),
-                                  );
-                                },
-                              ),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Expanded(
+                                    child: Style.button(
+                                      'Start new',
+                                      () {
+                                        _goToConfigurablePlan();
+                                      },
+                                      fontSize: Style.fontSizeSmall,
+                                      textColor: Colors.white,
+                                      borderRadiusValue: 20.0,
+                                    ),
+                                  ),
+                                ],
+                              )
                             ],
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    Container(
+                      child: Stack(
+                        children: <Widget>[
+                          Container(
+                            color: Style.containerColor,
+                            width: double.infinity,
+                            height: 60,
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Style.backgroundColor,
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(60),
+                              ),
+                            ),
+                            width: double.infinity,
+                            height: 60,
+                          )
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: maxWidth,
+                      decoration: BoxDecoration(
+                        color: Style.containerColor,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            left: Style.lateralPaddingValue + 20,
+                            top: 20,
+                            bottom: 20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Style.bodyText('Some restaurants you could like',
+                                color: Colors.black,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.normal),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            StreamBuilder(
+                              stream: places.stream,
+                              initialData: Utils.places,
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<List<Place>> snapshot) {
+                                return Container(
+                                  height: 300,
+                                  child: ListView.builder(
+                                    itemCount: 6,
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Padding(
+                                        padding: EdgeInsets.only(
+                                            right: Style.lateralPaddingValue),
+                                        child: Container(
+                                          child: PlaceCard(
+                                            place: snapshot.data[index],
+                                            image: images[index] == null
+                                                ? null
+                                                : images[index],
+                                            rating: rates[index],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
           );
-        }
-      ),
-    );
+        });
   }
 
   void _goToConfigurablePlan() {

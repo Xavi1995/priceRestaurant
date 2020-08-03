@@ -27,7 +27,10 @@ class Style {
       EdgeInsets.symmetric(horizontal: lateralPaddingValue);
   static final double lateralPaddingValue = 16;
   static final double extraPaddingValue = 36;
-  static final EdgeInsets extraFullPadding = EdgeInsets.only(top: extraPaddingValue, right: extraPaddingValue, left: extraPaddingValue);
+  static final EdgeInsets extraFullPadding = EdgeInsets.only(
+      top: extraPaddingValue,
+      right: extraPaddingValue,
+      left: extraPaddingValue);
 
   //FontSize
 
@@ -81,16 +84,26 @@ class Style {
     fontWeight,
     maxLines,
     textAlign,
+    fontFamilyAbril,
+    letterSpacing,
   }) {
     return Text(title,
         maxLines: maxLines,
         textAlign: textAlign != null ? textAlign : TextAlign.left,
         overflow: TextOverflow.ellipsis,
-        style: GoogleFonts.montserrat(
-          color: color == null ? Colors.white : color,
-          fontSize: fontSize == null ? fontSizeTitleName : fontSize,
-          fontWeight: fontWeight == null ? FontWeight.normal : fontWeight,
-        ));
+        style: fontFamilyAbril != null
+            ? GoogleFonts.abrilFatface(
+                color: color == null ? Colors.white : color,
+                fontSize: fontSize == null ? fontSizeTitleName : fontSize,
+                fontWeight: fontWeight == null ? FontWeight.normal : fontWeight,
+                letterSpacing: letterSpacing != null ? letterSpacing : 0,
+              )
+            : GoogleFonts.montserrat(
+                color: color == null ? Colors.white : color,
+                fontSize: fontSize == null ? fontSizeTitleName : fontSize,
+                fontWeight: fontWeight == null ? FontWeight.normal : fontWeight,
+                letterSpacing: letterSpacing != null ? letterSpacing : 0,
+              ));
   }
 
   static Widget bodyBoldText(
@@ -256,5 +269,90 @@ class Style {
             borderRadiusValue == null ? buttonRadius : borderRadiusValue),
       ),
     );
+  }
+
+  static Widget textField(hint, controller, context,
+      {keyboardType,
+      decoration,
+      textCapitalization,
+      obscure,
+      textInputAction,
+      focusNode,
+      nextFocusNode,
+      suffixIcon,
+      expands,
+      textAlignVertical,
+      enabled = true,
+      fillColor,
+      onChanged,
+      onSubmittedCallback,
+      prefixIcon}) {
+    return TextField(
+      keyboardType: keyboardType == null ? TextInputType.text : keyboardType,
+      textCapitalization: textCapitalization == null
+          ? TextCapitalization.none
+          : textCapitalization,
+      autofocus: false,
+      controller: controller,
+      style: TextStyle(
+          fontSize: 18,
+          color: enabled ? Colors.black : Colors.black.withOpacity(0.6)),
+      textInputAction:
+          textInputAction == null ? TextInputAction.done : textInputAction,
+      focusNode: focusNode,
+      onSubmitted:
+          textInputAction != null && textInputAction == TextInputAction.next
+              ? (term) {
+                  focusNode.unfocus();
+                  FocusScope.of(context).requestFocus(nextFocusNode);
+                }
+              : onSubmittedCallback != null ? onSubmittedCallback : null,
+      obscureText: obscure == null ? false : obscure,
+      decoration: decoration != null
+          ? decoration
+          : textFieldDecoration(hint, suffixIcon, fillColor, prefixIcon),
+      maxLines: expands != null && expands ? null : 1,
+      expands: expands != null ? expands : false,
+      textAlignVertical: textAlignVertical != null
+          ? textAlignVertical
+          : TextAlignVertical.center,
+      textAlign: TextAlign.start,
+      enabled: enabled != null ? enabled : true,
+      onChanged: onChanged != null ? onChanged : null,
+    );
+  }
+
+  static InputDecoration textFieldDecoration(
+      hint, suffixIcon, color, prefixIcon) {
+    return InputDecoration(
+        suffixIcon: suffixIcon == null ? null : suffixIcon,
+        filled: true,
+        fillColor: color,
+        hintText: hint,
+        prefixIcon: prefixIcon != null ? prefixIcon : null,
+        hintMaxLines: 5,
+        hintStyle: TextStyle(fontSize: 13),
+        contentPadding: EdgeInsets.fromLTRB(18.0, 12.0, 10.0, 18.0),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(containerRadius),
+          borderSide: BorderSide(color: Colors.transparent, width: 0.8),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(containerRadius),
+          borderSide: BorderSide(color: Colors.transparent, width: 0.8),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(containerRadius),
+          borderSide: BorderSide(color: Colors.transparent, width: 0.8),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(containerRadius),
+          borderSide: BorderSide(color: Colors.red, width: 0.5),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(containerRadius),
+          borderSide: BorderSide(color: Colors.red, width: 0.5),
+        ),
+        alignLabelWithHint: true);
   }
 }

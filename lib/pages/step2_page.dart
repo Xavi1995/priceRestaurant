@@ -17,6 +17,9 @@ class Step2 extends StatefulWidget {
 class _Step2State extends State<Step2> {
   StreamController<bool> _canGoNext = StreamController<bool>.broadcast();
   StreamController<int> _distanceState = StreamController<int>.broadcast();
+  TextEditingController locationController = TextEditingController();
+  TextEditingController timeController = TextEditingController();
+
   int indexSelected = 4;
 
   @override
@@ -24,10 +27,14 @@ class _Step2State extends State<Step2> {
     double minPrice = 8.00;
     double maxPrice = 35.00;
     List<Filter> trueFilters = [];
+
     for (int i = 0; i < widget.filters.length; i++) {
       if (widget.filters[i].state == true) {
         trueFilters.add(widget.filters[i]);
       }
+    }
+    for (int i = 0; i < trueFilters.length; i++) {
+      print(trueFilters[i].title);
     }
     double maxHeight = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -39,278 +46,349 @@ class _Step2State extends State<Step2> {
             return Stack(
               children: <Widget>[
                 SafeArea(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Padding(
-                        padding: Style.extraFullPadding,
-                        child: Style.bodyTitle('Step 2 : Parameters',
-                            fontSize: Style.fontSizeBodyPlus),
-                      ),
-                      SizedBox(height: 20),
-                      Container(
-                        height: maxHeight * 6 / 7,
-                        decoration: BoxDecoration(
-                          color: Style.backgroundColor,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(60),
-                          ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Padding(
+                          padding: Style.extraFullPadding,
+                          child: Style.bodyTitle('Step 2 : Parameters',
+                              fontSize: Style.fontSizeBodyPlus),
                         ),
-                        child: Padding(
-                          padding: Style.lateralPadding,
-                          child: Column(
-                            children: <Widget>[
-                              SizedBox(height: 20),
-                              Style.bodyText(
-                                  'Give me some parameters to make a better plan',
-                                  color: Style.grayColor,
-                                  fontSize: 14.0),
-                              SizedBox(height: 20),
-                              ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: trueFilters.length,
-                                itemBuilder: (BuildContext context, int index) {
-                                  switch (trueFilters[index].title) {
-                                    case 'Price':
-                                      return MoneyRange(
+                        SizedBox(height: 20),
+                        Container(
+                          height: maxHeight * 6 / 7,
+                          decoration: BoxDecoration(
+                            color: Style.backgroundColor,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(60),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: Style.lateralPadding,
+                            child: Column(
+                              children: <Widget>[
+                                SizedBox(height: 20),
+                                Style.bodyText(
+                                    'Give me some parameters to make a better plan',
+                                    color: Style.grayColor,
+                                    fontSize: 14.0),
+                                SizedBox(height: 20),
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: trueFilters.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    switch (trueFilters[index].title) {
+                                      case 'Price':
+                                        return MoneyRange(
                                           minPrice: minPrice,
-                                          maxPrice: maxPrice);
-                                      break;
-                                    case 'Location':
-                                      return Padding(
-                                        padding: EdgeInsets.only(bottom: 10),
-                                        child: Material(
-                                          elevation: 3,
-                                          borderRadius:
-                                              BorderRadius.circular(16),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(16),
-                                              color: Colors.white,
-                                            ),
-                                            child: Padding(
-                                              padding: EdgeInsets.all(
-                                                Style.lateralPaddingValue,
+                                          maxPrice: maxPrice,
+                                        );
+                                        break;
+                                      case 'Location':
+                                        return Padding(
+                                          padding: EdgeInsets.only(bottom: 20),
+                                          child: Material(
+                                            elevation: 3,
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(16),
+                                                color: Colors.white,
                                               ),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.stretch,
-                                                children: <Widget>[
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    children: <Widget>[
-                                                      Row(
-                                                        children: <Widget>[
-                                                          Image.asset(
-                                                              'assets/icons/locationIcon.png',
-                                                              height: 38,
-                                                              width: 38),
-                                                          SizedBox(width: 8),
-                                                          Style.bodyText(
-                                                              'Location',
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize: 20.0),
-                                                        ],
-                                                      ),
-                                                      Icon(Icons.refresh,
-                                                          color:
-                                                              Style.grayColor),
-                                                    ],
-                                                  ),
-                                                  SizedBox(height: 10),
-                                                  Style.bodyText(
-                                                      'Distance from current location',
-                                                      color: Style.grayColor,
-                                                      fontSize: 14.0),
-                                                  SizedBox(height: 10),
-                                                  StreamBuilder(
-                                                      stream:
-                                                          _distanceState.stream,
-                                                      initialData:
-                                                          indexSelected,
-                                                      builder:
-                                                          (context, snapshot) {
-                                                        print(snapshot.data);
-                                                        return Row(
+                                              child: Padding(
+                                                padding: EdgeInsets.all(
+                                                  Style.lateralPaddingValue,
+                                                ),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment
+                                                          .stretch,
+                                                  children: <Widget>[
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: <Widget>[
+                                                        Row(
                                                           children: <Widget>[
-                                                            Expanded(
-                                                              flex: 1,
-                                                              child: snapshot
-                                                                          .data ==
-                                                                      0
-                                                                  ? Style.button(
-                                                                      'near',
-                                                                      () {
-                                                                      indexSelected =
-                                                                          0;
-                                                                      _distanceState
-                                                                          .add(
-                                                                              indexSelected);
-                                                                    },
-                                                                      fontSize:
-                                                                          14.0,
-                                                                      textColor:
-                                                                          Colors
-                                                                              .white,
-                                                                      padding:
-                                                                          EdgeInsets.all(
-                                                                              0),
-                                                                      borderRadiusValue:
-                                                                          20.0)
-                                                                  : Style
-                                                                      .outlineButton(
-                                                                      'near',
-                                                                      () {
+                                                            Image.asset(
+                                                                'assets/icons/locationIcon.png',
+                                                                height: 38,
+                                                                width: 38),
+                                                            SizedBox(width: 8),
+                                                            Style.bodyText(
+                                                                'Location',
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: 20.0),
+                                                          ],
+                                                        ),
+                                                        Icon(Icons.refresh,
+                                                            color: Style
+                                                                .grayColor),
+                                                      ],
+                                                    ),
+                                                    SizedBox(height: 10),
+                                                    Style.bodyText(
+                                                        'Distance from current location',
+                                                        color: Style.grayColor,
+                                                        fontSize: 14.0),
+                                                    SizedBox(height: 10),
+                                                    StreamBuilder(
+                                                        stream: _distanceState
+                                                            .stream,
+                                                        initialData:
+                                                            indexSelected,
+                                                        builder: (context,
+                                                            snapshot) {
+                                                          print(snapshot.data);
+                                                          return Row(
+                                                            children: <Widget>[
+                                                              Expanded(
+                                                                flex: 1,
+                                                                child: snapshot
+                                                                            .data ==
+                                                                        0
+                                                                    ? Style.button(
+                                                                        'near',
+                                                                        () {
                                                                         indexSelected =
                                                                             0;
                                                                         _distanceState
                                                                             .add(indexSelected);
                                                                       },
-                                                                      fontSize:
-                                                                          14.0,
-                                                                      textColor:
-                                                                          Style
-                                                                              .primaryColor,
-                                                                      padding:
-                                                                          EdgeInsets.all(
-                                                                              0),
-                                                                      borderRadiusValue:
-                                                                          20.0,
-                                                                      borderColor:
-                                                                          Style
-                                                                              .primaryColor,
-                                                                      color: Colors
-                                                                          .transparent,
-                                                                    ),
-                                                            ),
-                                                            SizedBox(width: 4),
-                                                            Expanded(
-                                                              flex: 1,
-                                                              child: snapshot
-                                                                          .data ==
-                                                                      1
-                                                                  ? Style
-                                                                      .button(
-                                                                      'far',
-                                                                      () {
-                                                                        indexSelected =
-                                                                            1;
-                                                                        _distanceState
-                                                                            .add(indexSelected);
-                                                                      },
-                                                                      fontSize:
-                                                                          14.0,
-                                                                      textColor:
-                                                                          Colors
-                                                                              .white,
-                                                                      padding:
-                                                                          EdgeInsets.all(
-                                                                              0),
-                                                                      borderRadiusValue:
-                                                                          20.0,
-                                                                    )
-                                                                  : Style
-                                                                      .outlineButton(
-                                                                      'far',
-                                                                      () {
-                                                                        indexSelected =
-                                                                            1;
-                                                                        _distanceState
-                                                                            .add(indexSelected);
-                                                                      },
-                                                                      fontSize:
-                                                                          14.0,
-                                                                      textColor:
-                                                                          Style
-                                                                              .primaryColor,
-                                                                      padding:
-                                                                          EdgeInsets.all(
-                                                                              0),
-                                                                      borderRadiusValue:
-                                                                          20.0,
-                                                                      borderColor:
-                                                                          Style
-                                                                              .primaryColor,
-                                                                      color: Colors
-                                                                          .transparent,
-                                                                    ),
-                                                            ),
-                                                            SizedBox(width: 4),
-                                                            Expanded(
-                                                              flex: 1,
-                                                              child: snapshot
-                                                                          .data ==
-                                                                      2
-                                                                  ? Style
-                                                                      .button(
-                                                                      'far away',
-                                                                      () {
-                                                                        indexSelected =
-                                                                            2;
-                                                                        _distanceState
-                                                                            .add(indexSelected);
-                                                                      },
-                                                                      fontSize:
-                                                                          14.0,
-                                                                      textColor:
-                                                                          Colors
-                                                                              .white,
-                                                                      padding:
-                                                                          EdgeInsets.all(
-                                                                              0),
-                                                                      borderRadiusValue:
-                                                                          20.0,
-                                                                    )
-                                                                  : Style
-                                                                      .outlineButton(
-                                                                      'far away',
-                                                                      () {
-                                                                        indexSelected =
-                                                                            2;
-                                                                        _distanceState
-                                                                            .add(indexSelected);
-                                                                      },
-                                                                      fontSize:
-                                                                          14.0,
-                                                                      textColor:
-                                                                          Style
-                                                                              .primaryColor,
-                                                                      padding:
-                                                                          EdgeInsets.all(
-                                                                              0),
-                                                                      borderRadiusValue:
-                                                                          20.0,
-                                                                      borderColor:
-                                                                          Style
-                                                                              .primaryColor,
-                                                                      color: Colors
-                                                                          .transparent,
-                                                                    ),
-                                                            )
-                                                          ],
-                                                        );
-                                                      }),
-                                                ],
+                                                                        fontSize:
+                                                                            14.0,
+                                                                        textColor:
+                                                                            Colors
+                                                                                .white,
+                                                                        padding:
+                                                                            EdgeInsets.all(
+                                                                                0),
+                                                                        borderRadiusValue:
+                                                                            20.0)
+                                                                    : Style
+                                                                        .outlineButton(
+                                                                        'near',
+                                                                        () {
+                                                                          indexSelected =
+                                                                              0;
+                                                                          _distanceState
+                                                                              .add(indexSelected);
+                                                                        },
+                                                                        fontSize:
+                                                                            14.0,
+                                                                        textColor:
+                                                                            Style.primaryColor,
+                                                                        padding:
+                                                                            EdgeInsets.all(0),
+                                                                        borderRadiusValue:
+                                                                            20.0,
+                                                                        borderColor:
+                                                                            Style.primaryColor,
+                                                                        color: Colors
+                                                                            .transparent,
+                                                                      ),
+                                                              ),
+                                                              SizedBox(
+                                                                  width: 4),
+                                                              Expanded(
+                                                                flex: 1,
+                                                                child: snapshot
+                                                                            .data ==
+                                                                        1
+                                                                    ? Style
+                                                                        .button(
+                                                                        'far',
+                                                                        () {
+                                                                          indexSelected =
+                                                                              1;
+                                                                          _distanceState
+                                                                              .add(indexSelected);
+                                                                        },
+                                                                        fontSize:
+                                                                            14.0,
+                                                                        textColor:
+                                                                            Colors.white,
+                                                                        padding:
+                                                                            EdgeInsets.all(0),
+                                                                        borderRadiusValue:
+                                                                            20.0,
+                                                                      )
+                                                                    : Style
+                                                                        .outlineButton(
+                                                                        'far',
+                                                                        () {
+                                                                          indexSelected =
+                                                                              1;
+                                                                          _distanceState
+                                                                              .add(indexSelected);
+                                                                        },
+                                                                        fontSize:
+                                                                            14.0,
+                                                                        textColor:
+                                                                            Style.primaryColor,
+                                                                        padding:
+                                                                            EdgeInsets.all(0),
+                                                                        borderRadiusValue:
+                                                                            20.0,
+                                                                        borderColor:
+                                                                            Style.primaryColor,
+                                                                        color: Colors
+                                                                            .transparent,
+                                                                      ),
+                                                              ),
+                                                              SizedBox(
+                                                                  width: 4),
+                                                              Expanded(
+                                                                flex: 1,
+                                                                child: snapshot
+                                                                            .data ==
+                                                                        2
+                                                                    ? Style
+                                                                        .button(
+                                                                        'far away',
+                                                                        () {
+                                                                          indexSelected =
+                                                                              2;
+                                                                          _distanceState
+                                                                              .add(indexSelected);
+                                                                        },
+                                                                        fontSize:
+                                                                            14.0,
+                                                                        textColor:
+                                                                            Colors.white,
+                                                                        padding:
+                                                                            EdgeInsets.all(0),
+                                                                        borderRadiusValue:
+                                                                            20.0,
+                                                                      )
+                                                                    : Style
+                                                                        .outlineButton(
+                                                                        'far away',
+                                                                        () {
+                                                                          indexSelected =
+                                                                              2;
+                                                                          _distanceState
+                                                                              .add(indexSelected);
+                                                                        },
+                                                                        fontSize:
+                                                                            14.0,
+                                                                        textColor:
+                                                                            Style.primaryColor,
+                                                                        padding:
+                                                                            EdgeInsets.all(0),
+                                                                        borderRadiusValue:
+                                                                            20.0,
+                                                                        borderColor:
+                                                                            Style.primaryColor,
+                                                                        color: Colors
+                                                                            .transparent,
+                                                                      ),
+                                                              )
+                                                            ],
+                                                          );
+                                                        }),
+                                                    SizedBox(height: 20),
+                                                    Style.bodyText(
+                                                        'Know the location ?',
+                                                        color: Style.grayColor,
+                                                        fontSize: 14.0),
+                                                    SizedBox(height: 20),
+                                                    Theme(
+                                                      data: Theme.of(context)
+                                                          .copyWith(
+                                                        primaryColor:
+                                                            Colors.grey,
+                                                      ),
+                                                      child: Style.textField(
+                                                        'Location...',
+                                                        locationController,
+                                                        context,
+                                                        prefixIcon: Icon(
+                                                          Icons.location_on,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      );
-                                      break;
-                                    default:
-                                      return Container();
-                                  }
-                                },
-                              ),
-                            ],
+                                        );
+                                        break;
+                                      case 'Time':
+                                        return Padding(
+                                          padding: EdgeInsets.only(
+                                            bottom: 20,
+                                          ),
+                                          child: Material(
+                                            elevation: 3,
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(16),
+                                                ),
+                                                color: Colors.white,
+                                              ),
+                                              child: Padding(
+                                                padding: EdgeInsets.all(
+                                                  Style.lateralPaddingValue,
+                                                ),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    Row(
+                                                      children: <Widget>[
+                                                        Image.asset(
+                                                            'assets/icons/timeIcons.png',
+                                                            height: 38,
+                                                            width: 38),
+                                                        SizedBox(width: 8),
+                                                        Style.bodyText('Time',
+                                                            color: Colors.black,
+                                                            fontSize: 20.0),
+                                                        SizedBox(height: 20),
+                                                      ],
+                                                    ),
+                                                    SizedBox(height: 20),
+                                                    Style.bodyText(
+                                                      'I dont\'t wait more than...',
+                                                      color: Colors.grey,
+                                                    ),
+                                                    SizedBox(height: 20),
+                                                    Style.textField(
+                                                        'Minutes',
+                                                        timeController,
+                                                        context),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                        break;
+                                      default:
+                                        return Container();
+                                    }
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                        SizedBox(
+                          height: 100,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 Align(
@@ -449,8 +527,12 @@ class MoneyRange extends StatelessWidget {
                               color: Style.grayColor, fontSize: 15.0),
                           SizedBox(width: 2),
                           Style.bodyText(
-                            snapshot.data[0].toString().length >= 3 ?
-                              snapshot.data[0].toString().substring(0, 4) : snapshot.data[0].toString().substring(0, 4),
+                              snapshot.data[0].toString().substring(0, 2),
+                              /*
+                              snapshot.data[0].toString().length >= 3
+                                  ? snapshot.data[0].toString().substring(0, 2)
+                                  : snapshot.data[0].toString().substring(0, 2),
+                                  */
                               color: Style.grayColor,
                               fontSize: 15.0),
                           SizedBox(width: 2),
@@ -474,7 +556,8 @@ class MoneyRange extends StatelessWidget {
                           overlayColor: overlayColor,
                           activeTickMarkColor: activeTickMarkColor,
                           activeTrackColor: activeTrackColor,
-                          inactiveTrackColor: inactiveTrackColor,
+                          inactiveTrackColor: /*inactiveTrackColor*/ Colors
+                              .grey.shade300,
                           trackHeight: 1.0,
                           thumbColor: thumbColor,
                           valueIndicatorColor: valueIndicatorColor,
