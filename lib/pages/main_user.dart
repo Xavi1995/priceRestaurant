@@ -64,7 +64,8 @@ class _MainVcState extends State<MainVc> {
             backgroundColor: Style.backgroundColor,
             appBar: Style.appBar(
               'Your Plan',
-              color: Style.primaryColor,
+              textColor: Style.primaryColor,
+              backgroundColor: Style.backgroundColor,
               leading: IconButton(
                 icon: Icon(Icons.menu),
                 onPressed: () {

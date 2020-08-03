@@ -7,6 +7,7 @@ class Style {
   //Colors
 
   static const Color primaryColor = Color(0xFF375227);
+  static const Color primaryLightColor = Color(0xFF456831);
   static const Color containerColor = Color(0x807C9A82);
   static const Color backgroundColor = Color(0xFFF9F8F6);
   static const Color grayColor = Color(0xFFA5A5A5);
@@ -138,12 +139,12 @@ class Style {
         ));
   }
 
-  static Widget appBar(title, {color, leading, actions}) {
+  static Widget appBar(title, {textColor, leading, actions, backgroundColor}) {
     return AppBar(
       title: Text(
         title,
         style: GoogleFonts.abrilFatface(
-          color: color == null ? Colors.white : color,
+          color: textColor == null ? Colors.white : textColor,
           fontSize: fontSizeBodyPlus,
         ),
       ),

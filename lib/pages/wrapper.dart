@@ -1,10 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:price/models/profile.dart';
 import 'package:price/pages/authenticate/authenticate.dart';
 import 'package:price/pages/authenticate/authenticate_home_page.dart';
 import 'package:price/pages/profile_page.dart';
+import 'package:price/pages/test1_age1.dart';
+import 'package:price/pages/test2_page.dart';
+import 'package:price/pages/test3_page.dart';
 import 'package:price/utils/Style.dart';
 import 'package:price/widgets/bottomNavBar.dart';
 
@@ -20,9 +24,28 @@ class Wrapper extends StatefulWidget {
   _WrapperState createState() => _WrapperState();
 }
 
-class _WrapperState extends State<Wrapper> {
+class _WrapperState extends State<Wrapper> with TickerProviderStateMixin {
   StreamController<int> selectedIndexStream = StreamController<int>.broadcast();
   StreamController<bool> menuTrigger = StreamController<bool>.broadcast();
+  AnimationController animation;
+
+  void _onTapAnimation() {
+    animation.reset();
+    animation.forward();
+    animation.duration = Duration(
+      milliseconds: 200,
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    animation =
+        AnimationController(duration: Duration(seconds: 1), vsync: this);
+    animation.forward();
+    animation.addListener(() => setState(() {}));
+    animation.removeListener(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +73,7 @@ class _WrapperState extends State<Wrapper> {
                 body: Stack(
                   children: <Widget>[
                     Container(
-                      padding: EdgeInsets.all(Style.lateralPaddingValue),
+                      //padding: EdgeInsets.all(Style.lateralPaddingValue),
                       color: Style.primaryColor,
                       height: maxHeight,
                       child: AnimatedOpacity(
@@ -63,190 +86,325 @@ class _WrapperState extends State<Wrapper> {
                             children: <Widget>[
                               SizedBox(height: 20),
                               SafeArea(
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                child: Padding(
+                                  padding: Style.lateralPadding,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProfielPage(),
+                                            ),
+                                          );
+                                        },
+                                        child: Row(
+                                          children: <Widget>[
+                                            ClipRRect(
+                                              child: CircleAvatar(
+                                                  backgroundColor:
+                                                      Style.containerColor,
+                                                  backgroundImage: AssetImage(
+                                                      'assets/img/profileTest.jpeg')),
+                                            ),
+                                            SizedBox(width: 20),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Style.bodyTitle(
+                                                  'Xavi Castro',
+                                                  fontSize: 20.0,
+                                                ),
+                                                SizedBox(height: 4),
+                                                Style.bodyTitle(
+                                                  'xavicascoll@gmail.com',
+                                                  fontSize: 16.0,
+                                                  fontFamilyAbril: true,
+                                                  letterSpacing: 2.0,
+                                                  color: Colors.white
+                                                      .withOpacity(0.7),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Row(
+                                        children: <Widget>[
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.close,
+                                              color: Colors.white,
+                                            ),
+                                            onPressed: () {
+                                              menuTrigger
+                                                  .add(!snapshotState.data);
+                                            },
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 100),
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     GestureDetector(
                                       onTap: () {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) => ProfielPage(),
-                                          ),
-                                        );
+                                        selectedIndexStream.add(0);
                                       },
                                       child: Row(
                                         children: <Widget>[
-                                          ClipRRect(
-                                            child: CircleAvatar(
-                                                backgroundColor:
-                                                    Style.containerColor,
-                                                backgroundImage: AssetImage(
-                                                    'assets/img/profileTest.jpeg')),
+                                          AnimatedContainer(
+                                            duration:
+                                                Duration(milliseconds: 200),
+                                            height: 10,
+                                            width: snapshot.data == 0 ? 3 : 0,
+                                            decoration: BoxDecoration(
+                                                color: snapshot.data == 0
+                                                    ? Colors.white
+                                                    : Colors.transparent,
+                                                borderRadius: BorderRadius.only(
+                                                    topRight:
+                                                        Radius.circular(4),
+                                                    bottomRight:
+                                                        Radius.circular(4))),
                                           ),
-                                          SizedBox(width: 20),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              Style.bodyTitle(
-                                                'Xavi Castro',
-                                                fontSize: 20.0,
-                                              ),
-                                              SizedBox(height: 4),
-                                              Style.bodyTitle(
-                                                'xavicascoll@gmail.com',
-                                                fontSize: 16.0,
-                                                fontFamilyAbril: true,
-                                                letterSpacing: 2.0,
-                                                color: Colors.white
-                                                    .withOpacity(0.7),
-                                              ),
-                                            ],
+                                          SizedBox(
+                                              width: Style.lateralPaddingValue),
+                                          AnimatedContainer(
+                                            duration: Duration(
+                                              milliseconds: 200,
+                                            ),
+                                            child: AnimatedDefaultTextStyle(
+                                              duration:
+                                                  Duration(milliseconds: 200),
+                                              style: snapshot.data == 0
+                                                  ? GoogleFonts.montserrat(
+                                                      color: Colors.white,
+                                                      fontSize: 25.0,
+                                                      fontWeight:
+                                                          FontWeight.w300,
+                                                    )
+                                                  : GoogleFonts.montserrat(
+                                                      color:
+                                                          Style.containerColor,
+                                                      fontSize: 16.0,
+                                                    ),
+                                              child: Text('Home'),
+                                            ),
                                           ),
                                         ],
                                       ),
                                     ),
-                                    Row(
-                                      children: <Widget>[
-                                        IconButton(
-                                          icon: Icon(
-                                            Icons.close,
-                                            color: Colors.white,
+
+                                    ///////////////////////
+
+                                    SizedBox(height: 40),
+                                    GestureDetector(
+                                      onTap: () {
+                                        selectedIndexStream.add(1);
+                                      },
+                                      child: Row(
+                                        children: <Widget>[
+                                          AnimatedContainer(
+                                            duration:
+                                                Duration(milliseconds: 200),
+                                            decoration: BoxDecoration(
+                                                color: snapshot.data == 1
+                                                    ? Colors.white
+                                                    : Colors.transparent,
+                                                borderRadius: BorderRadius.only(
+                                                    topRight:
+                                                        Radius.circular(4),
+                                                    bottomRight:
+                                                        Radius.circular(4))),
+                                            height: 10,
+                                            width: snapshot.data == 1 ? 3 : 0,
                                           ),
-                                          onPressed: () {
-                                            menuTrigger
-                                                .add(!snapshotState.data);
-                                          },
-                                        )
-                                      ],
+                                          SizedBox(
+                                              width: Style.lateralPaddingValue),
+                                          AnimatedContainer(
+                                            duration: Duration(
+                                              milliseconds: 200,
+                                            ),
+                                            child: AnimatedDefaultTextStyle(
+                                              duration:
+                                                  Duration(milliseconds: 200),
+                                              style: snapshot.data == 1
+                                                  ? GoogleFonts.montserrat(
+                                                      color: Colors.white,
+                                                      fontSize: 25.0,
+                                                      fontWeight:
+                                                          FontWeight.w300,
+                                                    )
+                                                  : GoogleFonts.montserrat(
+                                                      color:
+                                                          Style.containerColor,
+                                                      fontSize: 16.0,
+                                                    ),
+                                              child: Text('Opción 2'),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 40),
+                                    GestureDetector(
+                                      onTap: () {
+                                        selectedIndexStream.add(2);
+                                      },
+                                      child: Row(
+                                        children: <Widget>[
+                                          AnimatedContainer(
+                                            duration:
+                                                Duration(milliseconds: 200),
+                                            decoration: BoxDecoration(
+                                                color: snapshot.data == 2
+                                                    ? Colors.white
+                                                    : Colors.transparent,
+                                                borderRadius: BorderRadius.only(
+                                                    topRight:
+                                                        Radius.circular(4),
+                                                    bottomRight:
+                                                        Radius.circular(4))),
+                                            height: 10,
+                                            width: snapshot.data == 2 ? 3 : 0,
+                                          ),
+                                          SizedBox(
+                                              width: Style.lateralPaddingValue),
+                                          AnimatedContainer(
+                                            duration: Duration(
+                                              milliseconds: 200,
+                                            ),
+                                            child: AnimatedDefaultTextStyle(
+                                              duration:
+                                                  Duration(milliseconds: 200),
+                                              style: snapshot.data == 2
+                                                  ? GoogleFonts.montserrat(
+                                                      color: Colors.white,
+                                                      fontSize: 25.0,
+                                                      fontWeight:
+                                                          FontWeight.w300,
+                                                    )
+                                                  : GoogleFonts.montserrat(
+                                                      color:
+                                                          Style.containerColor,
+                                                      fontSize: 16.0,
+                                                    ),
+                                              child: Text('Opción 3'),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 40),
+                                    GestureDetector(
+                                      onTap: () {
+                                        selectedIndexStream.add(3);
+                                      },
+                                      child: Row(
+                                        children: <Widget>[
+                                          AnimatedContainer(
+                                            duration:
+                                                Duration(milliseconds: 200),
+                                            decoration: BoxDecoration(
+                                                color: snapshot.data == 3
+                                                    ? Colors.white
+                                                    : Colors.transparent,
+                                                borderRadius: BorderRadius.only(
+                                                    topRight:
+                                                        Radius.circular(4),
+                                                    bottomRight:
+                                                        Radius.circular(4))),
+                                            height: 10,
+                                            width: snapshot.data == 3 ? 3 : 0,
+                                          ),
+                                          SizedBox(
+                                              width: Style.lateralPaddingValue),
+                                          AnimatedContainer(
+                                            duration: Duration(
+                                              milliseconds: 200,
+                                            ),
+                                            child: AnimatedDefaultTextStyle(
+                                              duration:
+                                                  Duration(milliseconds: 200),
+                                              style: snapshot.data == 3
+                                                  ? GoogleFonts.montserrat(
+                                                      color: Colors.white,
+                                                      fontSize: 25.0,
+                                                      fontWeight:
+                                                          FontWeight.w300,
+                                                    )
+                                                  : GoogleFonts.montserrat(
+                                                      color:
+                                                          Style.containerColor,
+                                                      fontSize: 16.0,
+                                                    ),
+                                              child: Text('Opción 4'),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
-                              ),
-                              SizedBox(height: 100),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: <Widget>[
-                                  GestureDetector(
-                                    onTap: () {
-                                      selectedIndexStream.add(0);
-                                    },
-                                    child: Row(
-                                      children: <Widget>[
-                                        Style.bodyText(
-                                          'Opción 1',
-                                          fontSize:
-                                              snapshot.data == 0 ? 25.0 : 16.0,
-                                          color: snapshot.data == 0
-                                              ? Colors.white
-                                              : Style.containerColor,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  snapshot.data == 0
-                                      ? SizedBox(height: 20)
-                                      : Container(),
-                                  SizedBox(height: 30),
-                                  GestureDetector(
-                                    onTap: () {
-                                      selectedIndexStream.add(1);
-                                    },
-                                    child: Row(
-                                      children: <Widget>[
-                                        Style.bodyText(
-                                          'Opción 2',
-                                          fontSize:
-                                              snapshot.data == 1 ? 25.0 : 16.0,
-                                          color: snapshot.data == 1
-                                              ? Colors.white
-                                              : Style.containerColor,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  snapshot.data == 1
-                                      ? SizedBox(height: 20)
-                                      : Container(),
-                                  SizedBox(height: 30),
-                                  GestureDetector(
-                                    onTap: () {
-                                      selectedIndexStream.add(2);
-                                    },
-                                    child: Row(
-                                      children: <Widget>[
-                                        Style.bodyText(
-                                          'Opción 3',
-                                          fontSize:
-                                              snapshot.data == 2 ? 25.0 : 16.0,
-                                          color: snapshot.data == 2
-                                              ? Colors.white
-                                              : Style.containerColor,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  snapshot.data == 2
-                                      ? SizedBox(height: 20)
-                                      : Container(),
-                                  SizedBox(height: 30),
-                                  GestureDetector(
-                                    onTap: () {
-                                      selectedIndexStream.add(3);
-                                    },
-                                    child: Row(
-                                      children: <Widget>[
-                                        Style.bodyText(
-                                          'Opción 4',
-                                          fontSize:
-                                              snapshot.data == 3 ? 25.0 : 16.0,
-                                          color: snapshot.data == 3
-                                              ? Colors.white
-                                              : Style.containerColor,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
                               ),
                               Expanded(
                                 child: SizedBox(
                                   height: Style.lateralPaddingValue * 2,
                                 ),
                               ),
-                              Container(
-                                width: double.infinity,
-                                margin: EdgeInsets.only(bottom: 40),
-                                child: Column(
-                                  children: <Widget>[
-                                    Divider(
-                                      color: Style.backgroundColor,
-                                      endIndent: 200,
-                                    ),
-                                    SizedBox(height: 30),
-                                    GestureDetector(
-                                      onTap: () {},
-                                      child: Container(
-                                        //color: Colors.red,
-                                        child: Row(
-                                          children: <Widget>[
-                                            Style.bodyTitle(
-                                              'Log out',
-                                              fontSize: 14.0,
-                                              letterSpacing: 2.0,
-                                              color: Colors.white,
-                                            ),
-                                            SizedBox(
-                                              width: 10,
-                                            ),
-                                            Icon(Icons.close,
-                                                color: Colors.white)
-                                          ],
+                              Padding(
+                                padding: Style.lateralPadding,
+                                child: Container(
+                                  width: double.infinity,
+                                  margin: EdgeInsets.only(bottom: 40),
+                                  child: Column(
+                                    children: <Widget>[
+                                      Divider(
+                                        color: Style.backgroundColor,
+                                        endIndent: 200,
+                                      ),
+                                      SizedBox(height: 30),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      AuthenticateMain()));
+                                        },
+                                        child: Container(
+                                          //color: Colors.red,
+                                          child: Row(
+                                            children: <Widget>[
+                                              Style.bodyTitle(
+                                                'Log out',
+                                                fontSize: 14.0,
+                                                letterSpacing: 2.0,
+                                                color: Colors.white,
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Icon(
+                                                Icons.close,
+                                                color: Colors.white,
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
@@ -312,13 +470,21 @@ class _WrapperState extends State<Wrapper> {
           },
         );
       case 1:
-        return Container();
+        return Test1Page(menuTriggerValue: (value) {
+          menuTrigger.add(value);
+        });
       /*case 2:
         return ClubPage(changeTab: _onItemTapped);*/
       case 2:
-        return Container();
+        return Test2Page(menuTriggerValue: (value) {
+          menuTrigger.add(value);
+        });
       case 3:
-        return Container();
+        return Test3Page(
+          menuTriggerValue: (value) {
+            menuTrigger.add(value);
+          },
+        );
     }
     return Container();
   }

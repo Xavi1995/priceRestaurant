@@ -46,17 +46,17 @@ class _Step2State extends State<Step2> {
             return Stack(
               children: <Widget>[
                 SafeArea(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        Padding(
-                          padding: Style.extraFullPadding,
-                          child: Style.bodyTitle('Step 2 : Parameters',
-                              fontSize: Style.fontSizeBodyPlus),
-                        ),
-                        SizedBox(height: 20),
-                        Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Padding(
+                        padding: Style.extraFullPadding,
+                        child: Style.bodyTitle('Step 2 : Parameters',
+                            fontSize: Style.fontSizeBodyPlus),
+                      ),
+                      SizedBox(height: 20),
+                      SingleChildScrollView(
+                        child: Container(
                           height: maxHeight * 6 / 7,
                           decoration: BoxDecoration(
                             color: Style.backgroundColor,
@@ -384,11 +384,11 @@ class _Step2State extends State<Step2> {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: 100,
-                        ),
-                      ],
-                    ),
+                      ),
+                      SizedBox(
+                        height: 100,
+                      ),
+                    ],
                   ),
                 ),
                 Align(
