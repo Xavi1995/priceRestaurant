@@ -7,6 +7,8 @@ import 'package:price/utils/Utils.dart';
 import 'package:provider/provider.dart';
 import 'package:price/database/db.dart' as db;
 
+import '../utils/Style.dart';
+
 class RootPage extends StatefulWidget {
   @override
   _RootPageState createState() => _RootPageState();
@@ -17,7 +19,7 @@ class _RootPageState extends State<RootPage> {
   Widget build(BuildContext context) {
     return StreamProvider<User>.value(
       value: AuthService().user,
-          child: StreamBuilder(
+      child: StreamBuilder(
         stream: db.getPlaces(),
         builder: (BuildContext context, AsyncSnapshot<List<Place>> snapshot) {
           Utils.places = snapshot.data;
@@ -33,14 +35,18 @@ class _RootPageState extends State<RootPage> {
               ),
             );
           } else if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return Scaffold(
+              backgroundColor: Style.backgroundColor,
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
           }
 
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             home: Wrapper(),
           );
-          
         },
       ),
     );

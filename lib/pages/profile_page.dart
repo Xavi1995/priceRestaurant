@@ -15,7 +15,7 @@ class _ProfielPageState extends State<ProfielPage> {
     double maxWidth = MediaQuery.of(context).size.width;
     double maxHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Style.primaryColor,
+      backgroundColor: Style.backgroundColor,
       appBar: Style.appBar(
         '',
         textColor: Colors.white,
@@ -35,67 +35,67 @@ class _ProfielPageState extends State<ProfielPage> {
               Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => UserSettings()));
             },
-          )
+          ),
         ],
       ),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: Container(
-                color: Style.backgroundColor,
-                child: Container(
-                  child: Container(),
+        child: Container(
+          child: Column(
+            children: <Widget>[
+              SizedBox(height: 50),
+              ClipOval(
+                child: Image.asset(
+                  'assets/img/profile-pic-test.jpg',
+                  fit: BoxFit.cover,
+                  height: 150,
+                  width: 150,
                 ),
               ),
-            ),
-            Expanded(
-              flex: 2,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Padding(
-                    padding: Style.lateralPadding,
-                    child: Neumorphic(
+              SizedBox(height: 20),
+              Style.bodyBoldText(
+                'Xavi Castro',
+                fontSize: 30.0,
+                color: Style.primaryColor,
+              ),
+              SizedBox(height: 10),
+              Style.bodyText(
+                'Profile info',
+                color: Style.primaryColor,
+              ),
+              SizedBox(height: 50),
+              Container(
+                width: double.infinity,
+                child: Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(10),
                       child: Container(
-                        height: maxHeight / 2,
-
-                        /*
-                        Container(
-                          child: Image.asset(
-                            'assets/img/profileTest.jpeg',
-                            //fit: BoxFit.cover,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
                           ),
                         ),
-                        */
-                      ),
-                      /* Image.asset(
-                          'assets/img/profileTest.jpeg',
-                          fit: BoxFit.cover,
-                          height: 100,
-                          width: 100,
-                        ),
-                        */
-                      style: NeumorphicStyle(
-                        boxShape: NeumorphicBoxShape.roundRect(
-                          BorderRadius.all(
-                            Radius.circular(20),
+                        child: Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Style.bodyBoldText(
+                                'Your priorities',
+                                color: Style.primaryColor,
+                              ),
+                              SizedBox(height: 4),
+                            ],
                           ),
                         ),
-                        color: Style.primaryColor,
-                        shadowLightColor: Style.primaryLightColor,
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

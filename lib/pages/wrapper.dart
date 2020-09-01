@@ -105,10 +105,11 @@ class _WrapperState extends State<Wrapper> with TickerProviderStateMixin {
                                           children: <Widget>[
                                             ClipRRect(
                                               child: CircleAvatar(
-                                                  backgroundColor:
-                                                      Style.containerColor,
-                                                  backgroundImage: AssetImage(
-                                                      'assets/img/profileTest.jpeg')),
+                                                backgroundColor:
+                                                    Style.containerColor,
+                                                backgroundImage: AssetImage(
+                                                    'assets/img/profile-pic-test.jpg'),
+                                              ),
                                             ),
                                             SizedBox(width: 20),
                                             Column(
